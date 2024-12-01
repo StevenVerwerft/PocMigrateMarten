@@ -15,9 +15,9 @@ builder.Services.AddMarten(options =>
     options.Connection("server=localhost;port=5432;database=poc-compiledqueries;user id=postgres;password=local;");
     options.UseNewtonsoftForSerialization(enumStorage: EnumStorage.AsString, nonPublicMembersStorage: NonPublicMembersStorage.NonPublicSetters);
 
-    options.Projections.Add(new BarCustomSimpleProjection(), ProjectionLifecycle.Inline);
+    options.Projections.Add(new BarCustomProjection(), ProjectionLifecycle.Inline);
 
-    options.Schema.For<Bar>();
+    options.RegisterDocumentType<Bar>();
 
     options.RegisterCompiledQueryType(typeof(BarCompiledQuery));
     options.RegisterCompiledQueryType(typeof(BarListCompiledQuery));
@@ -25,7 +25,7 @@ builder.Services.AddMarten(options =>
 })
     .InitializeWith(new BarInitialData())
     .UseLightweightSessions()
-    .OptimizeArtifactWorkflow(TypeLoadMode.Static)
+    .OptimizeArtifactWorkflow(TypeLoadMode.Auto)
     .AddAsyncDaemon(DaemonMode.HotCold);
 
 var app = builder.Build();
